@@ -67,10 +67,9 @@ Vagrant.configure(VAGRANTFILE_API_VERSION) do |config|
             -p 443:443
         ].join(' ')
 
-        d.build_image "/vagrant/docker/apache", args: "-t='httpd'"
-        d.run "httpd", args: %W[
-            -v '/vagrant/docker/apache/sites:/usr/local/apache2/conf/extra/default.conf:ro'
-            -v '/vagrant:/var/www/html'
+        d.run "nginx", image: "nginx:1.17-alpine", args: %W[
+            -v '/vagrant/docker/nginx/default.conf:/etc/nginx/conf.d/default.conf:ro'
+            -v '/vagrant:/usr/share/nginx/html'
 
             --network #{@docker_network}
 
