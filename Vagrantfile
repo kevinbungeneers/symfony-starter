@@ -91,12 +91,12 @@ Vagrant.configure(VAGRANTFILE_API_VERSION) do |config|
             --network #{@docker_network}
         ].join(' ')
 
-        d.run "percona", image: "percona:8",
-        args: %W[
+        d.run "postgres", image: "postgres:12-alpine", args: %W[
             --network #{@docker_network}
-            --mount source=mysqldata,target=/var/lib/mysql
-            --env-file /vagrant/docker/mysql/env.list
-            -p 3306:3306
+            --mount source=pgdata,target=/var/lib/postgresql/data
+            --env-file /vagrant/docker/postgres/env.list
+            --shm-size=256MB
+            -p 5432:5432
         ].join(' ')
 
         #d.build_image "/vagrant/docker/mailhog", args: "-t='mailhog'"
