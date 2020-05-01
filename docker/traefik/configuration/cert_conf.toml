@@ -1,6 +1,6 @@
 [[tls.certificates]]
-  certFile = "/etc/ssl/app/app.pem"
-  keyFile = "/etc/ssl/app/app-key.pem"
+  certFile = "/etc/ssl/app/application.pem"
+  keyFile = "/etc/ssl/app/application-key.pem"
 
 
 

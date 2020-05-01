@@ -11,15 +11,16 @@ end
 
 @docker_network = 'vagrant_nw';
 @hostname = 'symfony-starter.test';
+@aliases = [
+    "traefik.#{@hostname}",
+    "mails.#{@hostname}"
+]
 
 Vagrant.configure(VAGRANTFILE_API_VERSION) do |config|
     config.vm.box = "bungerous/alpine64"
 
     config.vm.hostname = @hostname
-    config.hostsupdater.aliases = [
-        "traefik.#{@hostname}",
-        "mails.#{@hostname}"
-    ]
+    config.hostsupdater.aliases = @aliases
 
     config.vm.provider "virtualbox" do |v|
         v.memory = 2048
@@ -38,6 +39,11 @@ Vagrant.configure(VAGRANTFILE_API_VERSION) do |config|
     config.vm.network "private_network", ip: "192.168.35.10"
 
     config.ssh.forward_agent = true
+
+    config.trigger.before :up do |trigger|
+        trigger.info = "Generating SSL certificates..."
+        trigger.run = { path: "vagrant/trigger/generate_certs.sh", args: "#{@hostname} #{@aliases.join(' ')}" }
+    end
 
     # Install custom scripts
     config.vm.provision :shell, inline: "ln -sf /vagrant/vagrant/bin/* /usr/local/bin/"
@@ -99,9 +105,7 @@ Vagrant.configure(VAGRANTFILE_API_VERSION) do |config|
             -p 5432:5432
         ].join(' ')
 
-        #d.build_image "/vagrant/docker/mailhog", args: "-t='mailhog'"
         d.run "mailhog", image: "mailhog/mailhog:latest", args: %W[
-            
             --network #{@docker_network}
             --label 'traefik.http.routers.mailhog.rule=Host(`mails.#{@hostname}`)'
             --label 'traefik.http.routers.mailhog.entrypoints=https'
