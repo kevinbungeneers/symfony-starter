@@ -94,10 +94,10 @@ Vagrant.configure(VAGRANTFILE_API_VERSION) do |config|
 
         d.build_image "/vagrant", args: "--target development -t='app'"
         d.run "app", args: %W[
-            -v '/vagrant/docker/app/php.ini-development:/usr/local/etc/php/php.ini:ro'
+            -v '/vagrant/docker/php/conf.d/symfony.dev.ini:/usr/local/etc/php/conf.d/symfony.ini:ro'
             -v '/vagrant:/var/www/html'
             --mount source=applogs,target=/var/log/symfony
-            --env-file /vagrant/docker/app/env.list
+            --env-file /vagrant/docker/php/env.list
 
             --network #{@docker_network}
         ].join(' ')
