@@ -69,6 +69,11 @@ Vagrant.configure(VAGRANTFILE_API_VERSION) do |config|
             --label 'traefik.http.routers.traefik.entrypoints=https'
             --label 'traefik.http.routers.traefik.tls=true'
 
+            --label "traefik.http.routers.https-redirect.entrypoints=http"
+            --label "traefik.http.routers.https-redirect.rule=HostRegexp(`{any:.*}`)"
+            --label "traefik.http.routers.https-redirect.middlewares=https-redirect"
+            --label "traefik.http.middlewares.https-redirect.redirectscheme.scheme=https"
+
             -p 80:80
             -p 443:443
         ].join(' ')
@@ -118,7 +123,7 @@ Vagrant.configure(VAGRANTFILE_API_VERSION) do |config|
     config.vm.provision :shell, inline: "docker exec -i app composer install"
 
     # After a Vagrant reload, some containers fail to start due to our NFS mount not being fully initialized.
-    # We should be able to make the docker systemd service depend on the NFS service, but I haven't yet
+    # We should be able to make the docker service depend on the NFS service, but I haven't yet
     # figured out how to make that work reliably.
     # So, in the meantime we'll have to make do with this simple workaround:
     config.vm.provision "shell", inline: "sudo service docker restart", run: "always"
