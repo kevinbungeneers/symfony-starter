@@ -4,7 +4,8 @@ RUN apk --no-cache add --virtual .project-deps \
     freetype libjpeg-turbo libpng libxpm \
     icu-libs \
     libzip \
-    git
+    git \
+    tzdata
 
 RUN apk --no-cache add --virtual .build-deps \
     freetype-dev libjpeg-turbo-dev libpng-dev libxpm-dev \
