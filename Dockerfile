@@ -5,6 +5,7 @@ RUN apk --no-cache add --virtual .project-deps \
     icu-libs \
     libzip \
     libpq \
+    yaml \
     git \
     tzdata
 
@@ -14,14 +15,17 @@ RUN apk --no-cache add --virtual .build-deps \
     cmake gnutls-dev libzip-dev libressl-dev zlib-dev \
     libxml2-dev \
     postgresql-dev \
+    yaml-dev \
     autoconf build-base && \
     docker-php-ext-configure pgsql --with-pgsql=/usr/local/pgsql && \ 
     docker-php-ext-configure gd --with-freetype=/usr/include/ --with-jpeg=/usr/include/ && \
     docker-php-ext-install -j$(getconf _NPROCESSORS_ONLN) iconv intl pdo pdo_pgsql zip soap exif gd && \
     pecl install xdebug && \
     pecl install apcu && \
+    pecl install yaml && \
     docker-php-ext-enable apcu && \
     docker-php-ext-enable opcache && \
+    docker-php-ext-enable yaml && \
     apk del --purge .build-deps
 
 RUN mkdir /var/cache/symfony && \
