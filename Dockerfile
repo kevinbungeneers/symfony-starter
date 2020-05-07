@@ -53,7 +53,7 @@ RUN set -eux; \
 	composer global require "symfony/flex" --prefer-dist --no-progress --no-suggest --classmap-authoritative; \
 	composer clear-cache
 ENV PATH="${PATH}:/root/.composer/vendor/bin"
-RUN /usr/bin/composer install --no-ansi --no-dev --no-interaction --no-plugins --no-progress --no-scripts --no-suggest --optimize-autoloader
+RUN /usr/bin/composer install --no-ansi --no-dev --no-interaction --no-progress --classmap-authoritative
 
 FROM base as production
 COPY --from=vendor /var/www/html /var/www/html
